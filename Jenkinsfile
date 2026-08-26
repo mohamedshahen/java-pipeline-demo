@@ -29,7 +29,7 @@ pipeline {
         stage('SonarQube Analysis') {
             when {
         expression {
-            params.RUN_SONAR
+	   true
         }
     }
            steps {
