@@ -41,6 +41,14 @@ pipeline {
         }
     }
 }
+
+stage('OWASP Dependency') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'dependency-check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+
     stage('Quality Gate') {
         when {
         expression {
