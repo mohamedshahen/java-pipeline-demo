@@ -19,18 +19,34 @@ pipeline {
                 sh "mvn clean compile"
             }
         }
+
+        stage('Unit testing') {
+            steps {
+                sh "mvn test -Dmaven.test.skip=true"
+            }
+        }
         
         stage('SonarQube Analysis') {
+            when {
+        expression {
+            params.RUN_SONAR
+        }
+    }
            steps {
              withSonarQubeEnv('SonarQube') {
-                sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=ci-cd \
+                sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=demo \
                 -Dsonar.java.binaries=. \
-                -Dsonar.projectKey=ci-cd
+                -Dsonar.projectKey=demo
                 '''
         }
     }
 }
     stage('Quality Gate') {
+        when {
+        expression {
+            params.RUN_SONAR
+        }
+    }
     steps {
         timeout(time: 5, unit: 'MINUTES') {
             waitForQualityGate abortPipeline: true
@@ -38,11 +54,21 @@ pipeline {
     }
 }
     stage('Code Build') {
+        when {
+        expression {
+            params.RUN_SONAR
+        }
+    }
             steps {
                 sh "mvn clean install"
             }
         }
     stage('Docker Version') {
+        when {
+        expression {
+            params.RUN_SONAR
+        }
+    }
     steps {
         sh '''
             echo "PATH=$PATH"
@@ -53,6 +79,11 @@ pipeline {
     }
 }
    stage('Docker Build & Push') {
+       when {
+        expression {
+            params.RUN_SONAR
+        }
+    }
     steps {
         script {
             withDockerRegistry(credentialsId: 'docker-login') {
@@ -66,6 +97,11 @@ pipeline {
     }
 }
 stage('deploy to kubernetes'){
+    when {
+        expression {
+            params.RUN_SONAR
+        }
+    }
     steps {
         script {
     withKubeCredentials(kubectlCredentials: [[ credentialsId: 'kubeconfig']]) {
