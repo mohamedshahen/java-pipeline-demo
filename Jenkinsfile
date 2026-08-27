@@ -71,7 +71,7 @@ stage('OWASP Dependency Report') {
             alwaysLinkToLastBuild: true,
             keepAll: true,
             reportDir: '.',
-            reportFiles: 'dependency-check-report.html',
+            reportFiles: 'dependency-check-report.xml',
             reportName: 'OWASP Dependency-Check Report'
         ])
     }
