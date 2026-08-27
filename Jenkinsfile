@@ -55,7 +55,7 @@ when {
             }
         }
 
-stage('OWASP Dependency') {
+stage('OWASP Dependency Report') {
     steps {
         dependencyCheck(
             additionalArguments: '--scan ./',
