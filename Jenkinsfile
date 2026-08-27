@@ -43,11 +43,39 @@ pipeline {
 }
 
 stage('OWASP Dependency') {
+when {
+        expression {
+            params.RUN_SONAR
+        }
+    }
+
             steps {
                 dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'dependency-check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
+
+stage('OWASP Dependency') {
+    steps {
+        dependencyCheck(
+            additionalArguments: '--scan ./',
+            odcInstallation: 'dependency-check'
+        )
+
+        dependencyCheckPublisher(
+            pattern: '**/dependency-check-report.xml'
+        )
+
+        publishHTML([
+            allowMissing: false,
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: '.',
+            reportFiles: 'dependency-check-report.html',
+            reportName: 'OWASP Dependency-Check Report'
+        ])
+    }
+}
 
     stage('Quality Gate') {
         when {
