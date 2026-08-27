@@ -50,7 +50,7 @@ when {
     }
 
             steps {
-                dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'dependency-check'
+                dependencyCheck additionalArguments: '--scan ./ --format HTML --format XML', odcInstallation: 'dependency-check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
@@ -71,7 +71,7 @@ stage('OWASP Dependency Report') {
             alwaysLinkToLastBuild: true,
             keepAll: true,
             reportDir: '.',
-            reportFiles: 'dependency-check-report.xml',
+            reportFiles: 'dependency-check-report.html',
             reportName: 'OWASP Dependency-Check Report'
         ])
     }
