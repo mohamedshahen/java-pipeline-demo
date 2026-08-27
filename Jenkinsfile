@@ -55,10 +55,11 @@ when {
             }
         }
 
+
 stage('OWASP Dependency Report') {
     steps {
         dependencyCheck(
-            additionalArguments: '--scan ./',
+            additionalArguments: '--scan ./ --format HTML --format XML --out .',
             odcInstallation: 'dependency-check'
         )
 
